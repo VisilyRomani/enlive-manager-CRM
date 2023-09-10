@@ -1,0 +1,324 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("LOCAL_DATABASE")
+  directUrl = env("DIRECT_DEV_DATABASE")
+}
+
+model address {
+  address_id  String        @id(map: "address_pk") @default(cuid()) @db.VarChar
+  address     String        @db.VarChar
+  city        String        @db.VarChar
+  country     String        @db.VarChar
+  province    String        @db.VarChar
+  lat         Float?
+  long        Float?
+  is_billing  Boolean
+  client      client        @relation(fields: [client_id], references: [client_id])
+  client_id   String        @db.VarChar
+  job_details job_details[]
+  deleted     Boolean       @default(false)
+}
+
+model client {
+  company_id    String    @db.VarChar
+  client_id     String    @id(map: "client_pk") @unique @default(cuid()) @db.VarChar
+  first_name    String    @db.VarChar
+  last_name     String    @db.VarChar
+  phone_number  String?   @db.VarChar
+  mobile_number String?   @db.VarChar
+  fax           String?   @db.VarChar
+  term          String    @default("") @db.VarChar
+  note          String    @default("") @db.VarChar
+  email         String    @default("") @db.VarChar
+  platform      platform
+  address       address[]
+}
+
+model job_details {
+  company_id           String     @db.VarChar
+  job_id               String     @id(map: "jobs_pk") @unique @default(cuid()) @db.VarChar
+  job_number           Int
+  updated_at           DateTime   @updatedAt @db.Timestamptz()
+  creation_date        DateTime   @default(now()) @db.Timestamptz()
+  status               status     @default(PENDING)
+  address              address    @relation(fields: [address_id], references: [address_id])
+  job_note             String     @default("") @db.VarChar
+  address_id           String     @db.VarChar
+  job_task             job_task[]
+  schedule             schedule?  @relation(fields: [scheduleSchedule_id], references: [schedule_id])
+  scheduleSchedule_id  String?    @db.VarChar
+  estimated_time       Int?       @default(60)
+  estimated_date       DateTime?  @db.Date()
+  start_time           DateTime?  @db.Timestamptz()
+  end_time             DateTime?  @db.Timestamptz()
+  estimated_start_time DateTime?  @db.Timestamptz()
+  estimated_end_time   DateTime?  @db.Timestamptz()
+  invoice              invoice[]
+}
+
+model invoice {
+  invoice_id          String             @id(map: "invoice_id_pk") @unique @default(cuid()) @db.VarChar
+  invoice_number      Int
+  company_id          String             @db.VarChar
+  sent_at             DateTime?          @db.Timestamptz()
+  created_at          DateTime           @default(now()) @db.Timestamptz()
+  invoice_template    invoice_template   @relation(fields: [invoice_template_id], references: [invoice_template_id])
+  invoice_location    invoice_location[]
+  invoice_template_id String             @db.VarChar
+  invoice_data        invoice_data[]
+  job_details         job_details        @relation(fields: [job_id], references: [job_id])
+  job_id              String             @db.VarChar
+  payment             Int                @default(0)
+  void                Boolean            @default(false)
+  transaction         transaction[]
+}
+
+model invoice_data {
+  invoice_data_id    String          @id(map: "invoice_data_id_pk") @unique @default(cuid()) @db.VarChar
+  product_service_id String          @db.VarChar
+  product_service    product_service @relation(fields: [product_service_id], references: [product_service_id])
+  price              Int
+  quantity           Float
+  invoice            invoice         @relation(fields: [invoice_id], references: [invoice_id])
+  invoice_id         String
+}
+
+model invoice_template {
+  invoice_template_id String    @id(map: "invoice_template_pk") @unique @default(cuid()) @db.VarChar
+  company_id          String    @unique @db.VarChar
+  logo                String?   @db.VarChar
+  gst                 String?   @db.VarChar
+  pst                 String?   @db.VarChar
+  address             String?   @db.VarChar
+  city                String?   @db.VarChar
+  phone               String?   @db.VarChar
+  link                String?   @db.VarChar
+  email               String?   @db.VarChar
+  terms               String?   @db.VarChar
+  footer              String?   @db.VarChar
+  due_date            Int?
+  final_notice        Int? @default(0)
+  invoice             invoice[]
+}
+
+model invoice_location {
+  invoice_location_id String   @id(map: "invoice_location_pk") @unique @default(cuid()) @db.VarChar
+  invoice_key         String
+  created_at          DateTime @default(now()) @db.Timestamptz()
+  invoice             invoice  @relation(fields: [invoice_id], references: [invoice_id])
+  invoice_id          String
+  type                pdf_type
+}
+
+model transaction {
+  transaction_id String           @id(map: "transaction_id_pk") @unique @default(cuid()) @db.VarChar
+  invoice        invoice?         @relation(fields: [invoice_id], references: [invoice_id])
+  amount         Int
+  date           DateTime         @default(now()) @db.Timestamptz()
+  transaction    transaction_type
+  account        account_type
+  invoice_id     String?
+  reference_code String?
+  payment_type           payment_type?
+}
+
+
+model email_validate {
+  email_validate    String   @id(map: "email_validate_pk") @unique @default(cuid()) @db.VarChar
+  created_at        DateTime @default(now()) @db.Timestamptz()
+  job_id String   @db.VarChar
+}
+
+model job_task {
+  job_task_id        String          @id(map: "job_type_pk") @unique @default(cuid()) @db.VarChar
+  job_details        job_details     @relation(fields: [job_id], references: [job_id])
+  job_id             String          @db.VarChar
+  quantity           Float
+  price              Int
+  product_service    product_service @relation(fields: [product_service_id], references: [product_service_id])
+  product_service_id String          @db.VarChar
+}
+
+model product_service {
+  product_service_id  String                @id(map: "product_service_id") @unique @default(cuid()) @db.VarChar
+  name                String                @db.VarChar
+  job_task            job_task[]
+  company_id          String                @db.VarChar
+  product_service_tax product_service_tax[]
+  deleted             Boolean               @default(false)
+  created_at          DateTime              @default(now()) @db.Timestamptz()
+  invoice_data        invoice_data[]
+}
+
+model product_service_tax {
+  product_service    product_service @relation(fields: [product_service_id], references: [product_service_id])
+  product_service_id String          @db.VarChar
+  tax                tax             @relation(fields: [tax_id], references: [tax_id])
+  tax_id             String          @db.VarChar
+
+  @@id([product_service_id, tax_id])
+}
+
+model tax {
+  tax_id              String                @id(map: "tax_id_pk") @unique @default(cuid()) @db.VarChar
+  name                String                @db.VarChar
+  percent             Int                   @db.Integer()
+  company_id          String                @db.VarChar
+  product_service_tax product_service_tax[]
+  deleted             Boolean               @default(false)
+  created_at          DateTime              @default(now()) @db.Timestamptz()
+}
+
+model schedule {
+  schedule_id   String          @id(map: "schedule_pk") @unique @default(cuid()) @db.VarChar
+  schedule_name String          @db.VarChar
+  company_id    String          @db.VarChar
+  job_details   job_details[]
+  date          DateTime        @db.Date
+  user_schedule user_schedule[]
+}
+
+model user_schedule {
+  schedule    schedule @relation(fields: [schedule_id], references: [schedule_id])
+  schedule_id String   @db.VarChar
+  user        user     @relation(fields: [user_id], references: [id])
+  user_id     String   @db.VarChar
+
+  @@id([schedule_id, user_id])
+}
+
+model item_stock {
+  company_id   String
+  stock_id     String  @id(map: "stock_pk") @unique @default(cuid()) @db.VarChar
+  name         String  @db.VarChar
+  manufacturer String  @db.VarChar
+  order_link   String? @db.VarChar
+  quantity     Int
+}
+
+model company {
+  id                String         @id(map: "company_pk") @unique @default(uuid()) @db.VarChar
+  profile_picture   String?        @db.VarChar
+  company_name      String
+  address           String
+  email             String
+  number            String
+  user              user[]
+  code              company_code[]
+  company_job_count Int            @default(0)
+}
+
+model company_code {
+  code       String  @unique
+  company_id String
+  company    company @relation(fields: [company_id], references: [id])
+}
+
+model account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.VarChar()
+  access_token      String? @db.VarChar()
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.VarChar()
+  session_state     String?
+  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model user {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String?         @unique
+  emailVerified DateTime?
+  image         String?
+  company       company?        @relation(fields: [company_id], references: [id])
+  company_id    String?
+  accounts      account[]
+  sessions      session[]
+  user_role     roles?
+  active        Boolean         @default(true)
+  user_schedule user_schedule[]
+}
+
+model verification_token {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum status {
+  PENDING
+  POSTPONED
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+enum platform {
+  FACEBOOK
+  EMAIL
+  TEXT
+  PHONE
+}
+
+enum roles {
+  OWNER
+  ADMIN
+  OPERATIONS
+  TEAMLEAD
+  WORKER
+}
+
+/// ACCOUNTS_RECIEVABLE - customer owes company
+/// ACCOUNTS_PAYABLE - company owes customer
+enum account_type {
+  ACCOUNTS_RECIEVABLE
+  ACCOUNTS_PAYABLE
+}
+
+/// DEBIT - amount owed
+/// CREDIT - amount recieved
+enum transaction_type {
+  CREDIT
+  DEBIT
+}
+
+enum payment_type {
+ETRANSFER
+CASH 
+CHEQUE 
+OTHER
+}
+
+enum pdf_type {
+  INVOICE
+  RECEIPT
+}
+
+enum check {
+  IN
+  OUT
+}
+

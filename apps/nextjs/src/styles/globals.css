@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-family: Proxima-Nova;
+  src: local("/fonts/Proxima-Nova-Font.otf");
+  font-weight: 900;
+  font-style: normal;
+}
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  font-family: "Proxima-Nova", "Arial";
+}
+
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+select {
+  /* -webkit-appearance: none; */
+  color: rgb(55 65 81 / var(--tw-text-opacity));
+}
+dialog:modal {
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
+@media (max-width: 650px) {
+  .Rthead {
+    display: none;
+  }
+  .Rtdata {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 0.5rem 1rem;
+  }
+
+  .Rtdata:first-child {
+    padding-top: 1rem;
+  }
+
+  .Rtdata:last-child {
+    padding-bottom: 1rem;
+  }
+
+  .Rtdata::before {
+    content: attr(datatype);
+    font-weight: 700;
+    color: #4a5568;
+    text-transform: capitalize;
+  }
+}

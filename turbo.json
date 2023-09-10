@@ -1,0 +1,30 @@
+{
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build", "^db-generate"],
+      "outputs": [".next/**"]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "dev": {
+      "dependsOn": ["^db-generate"],
+      "cache": false
+    },
+    "db-generate": {
+      "cache": false
+    },
+    "db-push": {
+      "cache": false
+    },
+    "db-deploy": {
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    },
+    "//#clean": {
+      "cache": false
+    }
+  }
+}
