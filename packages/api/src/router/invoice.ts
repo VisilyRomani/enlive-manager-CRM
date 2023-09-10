@@ -309,7 +309,7 @@ export const invoiceRouter = t.router({
         charge: input.client.charge,
       });
       const response = await fetch(
-        `${String(process.env.URL)}/api/pdf/invoice`,
+        `${String(process.env.NEXTAUTH_URL)}/api/pdf/invoice`,
         {
           method: "POST",
           body: JSON.stringify({ ...input }),
