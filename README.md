@@ -4,7 +4,7 @@
 
 ## About
 
-Welcome to our CRM system built to optimize job and client management, along with hassle-free invoicing. This platform offers seamless job tracking, empowering you to oversee projects from start to finish. Centralize client information, communication history, and preferences for personalized interactions that foster strong relationships. The automated invoicing feature simplifies the billing process, allowing you to generate and dispatch invoices effortlessly. Elevate your business workflow and enhance client satisfaction with our all-inclusive CRM solution.
+Welcome to my CRM system built to optimize job and client management, along with hassle-free invoicing. This platform offers seamless job tracking, empowering you to oversee projects from start to finish. Centralize client information, communication history, and preferences for personalized interactions that foster strong relationships. The automated invoicing feature simplifies the billing process, allowing you to generate and dispatch invoices effortlessly.
 
 # Technologies
 
@@ -13,7 +13,7 @@ Welcome to our CRM system built to optimize job and client management, along wit
 - React
 - Nextjs
 - TRPC
-- R2
+- Cloudflare R2
 
 ## Quick Start
 
@@ -27,16 +27,16 @@ To get it running, follow the steps below:
   - GOOGLE_CLIENT_ID
   - GOOGLE_CLIENT_SECRET
   - NEXTAUTH_SECRET
-  - URL
   - CLOUDFLARE_PUBLIC
 - packages/db/.env
+  - LOCAL_DATABASE
+  - DIRECT_DEV_DATABASE
   - CLOUDFLARE_ACCESS
   - CLOUDFLARE_SECRET
   - CLOUDFLARE_ADDRESS
   - CLOUDFLARE_PUBLIC
-  - NEXTAUTH_SECRET
   - RESEND_API
-  - EMAIL_STRING
+  - EMAIL_STRING (EX. "Company Name <noreply@domain.com>") 
 
 ```diff
 # Install dependencies
