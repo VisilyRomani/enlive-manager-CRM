@@ -4,7 +4,7 @@
 
 ## About
 
-Welcome to my CRM system built to optimize job and client management, along with hassle-free invoicing. This platform offers seamless job tracking, empowering you to oversee projects from start to finish. Centralize client information, communication history, and preferences for personalized interactions that foster strong relationships. The automated invoicing feature simplifies the billing process, allowing you to generate and dispatch invoices effortlessly.
+Welcome to my CRM system built to optimize job and client management along with hassle-free invoicing. This platform offers seamless job tracking, empowering you to oversee projects from start to finish, centralize client information and create simple scheudles. It also includes an automated invoicing feature that simplifies the billing process, allowing you to generate and dispatch invoices effortlessly.
 
 # Technologies
 
